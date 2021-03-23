@@ -1,4 +1,4 @@
 # line-segment-intersections
 GitHub repo for Spring 2021 Computational Geometry project
 
-Explain the project here.
+Explain the project with a simple overview here.

@@ -3,6 +3,7 @@ import pyglet
 from pyglet import shapes
 from pyglet.window import mouse, key
 from segment import segment
+from button import button
 
 # GLOBAL VARIABLES 
 # configurations for the whole program. Best not to mess with them too much. 
@@ -12,8 +13,11 @@ background_color = (1, 1, 1)
 old_color = (0, 0, 0)
 new_color = (100, 200, 150)
 
-segs = [segment((50, 50), (300, 300), color=old_color)]
+segs = []
 
+# Generate the buttons
+drawButton = button("DRAW", x=100, y=65, width=150, height=80, buttonColor=(140, 232, 165), textColor=(255, 255, 255, 255), statechange=None)
+clearButton = button("CLEAR", x=275, y=65, width=175, height=80, buttonColor=(232, 229, 140), textColor=(255, 255, 255, 255), statechange=None)
 
 # Generate the Pyglet Window with important configurations
 if is_fullscreen:
@@ -27,9 +31,22 @@ second_endpoint = False
 @window.event
 def on_mouse_press(x, y, button, modifiers):
     global segs, second_endpoint
+    if drawButton.isClicked(x, y):
+        if second_endpoint:
+            second_endpoint = False
+            segs.pop()
+        drawButton.click()
+        return
+    if clearButton.isClicked(x, y):
+        if second_endpoint:
+            second_endpoint = False
+            segs.pop()
+        segs = []
+        return
     if not second_endpoint:
         segs.append(segment((x, y), (x, y), color=old_color))
         second_endpoint = True
+
     else:
         second_endpoint = False
 
@@ -55,6 +72,8 @@ def on_draw():
         
     for s in segs:
         s.draw()
+    drawButton.draw()
+    clearButton.draw()
 
 # Run the whole thing
 pyglet.app.run()

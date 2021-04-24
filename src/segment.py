@@ -30,3 +30,4 @@ class segment():
             self.p2.y = p[1]
             self.segment.x2 = p[0]
             self.segment.y2 = p[1]
+

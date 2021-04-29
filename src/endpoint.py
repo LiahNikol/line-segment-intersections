@@ -13,7 +13,7 @@ class Endpoint:
     return not self.left
     
   def coords(self):
-    return [self.x, self.y]
+    return (self.x, self.y)
 
   def getSegment(self):
     return self.segment

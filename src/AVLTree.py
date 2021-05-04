@@ -11,9 +11,9 @@ class AVLTree:
         return self.size
     
     def inOrder(self):
-        inOrderRecursive(self.root)
+        self.inOrderRecursive(self.root)
     
-    def inOrderRecursive(self, node)
+    def inOrderRecursive(self, node):
         if node == None:
             return 
         self.inOrderRecursive(node.getLeft())
@@ -21,7 +21,7 @@ class AVLTree:
         self.inOrderRecursive(node.getRight())
         
     def add(self, segment):
-        addRecursive(self.root, segment)
+        self.addRecursive(self.root, segment)
     
     def addRecursive(self, root, segment):
         if root == None:
@@ -36,22 +36,29 @@ class AVLTree:
             root.right = self.addRecursive(root.right, segment)
         else:
             # then this is an intersection
+            return #Just so this compiles for now
         
         # balancing logic 
+        return #Just so this compiles for now
         
     def remove(self, segment):
-        return removeRecursive(self.root, segment)
+        return self.removeRecursive(self.root, segment)
         
     def removeRecursive(self, root, segment):    
         segX, segY = segment.getEndpoints()
         if root == None:
+            return #Just so this compiles for now
+        return #Just so this compiles for now
             
         
     def swap(self):
+        return #Just so this compiles for now
         
     def findAbove(self, segment):
+        return #Just so this compiles for now
     
     def findBelow(self, segment):
+        return #Just so this compiles for now
     
    
   

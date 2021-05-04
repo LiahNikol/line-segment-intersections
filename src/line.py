@@ -15,12 +15,8 @@ class line():
         self.segment = shapes.Line(p1[0], p1[1], p2[0], p2[1], width=line_width, color=color, batch=self.batch)
         self.shapes = [self.p1, self.p2, self.segment]
 
-        self.endpoint1 = shapes.Circle(p1[0], p1[1], endpoint_radius, color=color)
-        self.endpointLabel1 = button("1F", 100, 100, 50, 50, (100, 200, 150), (0,0,0,0))
-        self.endpoint2 = shapes.Circle(p2[0], p2[1], endpoint_radius, color=color)
-        self.endpointLabel2 = button("1B", 100, 100, 50, 50, (100, 200, 150), (0,0,0,0))
-
-        self.segmentLabel = button("1", 100, 100, 50, 50, (100, 100, 200), (0,0,0,0))
+        self.endpoint1 = Location(p1[0], p1[1], self)
+        self.endpoint2 = Location(p2[0], p2[1], self)
 
 
     def draw(self):
@@ -52,3 +48,10 @@ class line():
 
         self.endpoint2.x = self.p2.x
         self.endpoint2.y = self.p2.y
+
+# This is needed because of the wonky way I'm drawing the Intersections' PriorityQueue Cards
+class Location():
+    def __init__(self, x, y, data=None):
+        self.x = x
+        self.y = y
+        self.data = data

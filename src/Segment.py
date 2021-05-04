@@ -2,20 +2,28 @@
 from Endpoint import Endpoint
 
 class Segment:
-  def __init__(self, left, right):
-    # assumes client provides points in corrent left-right order
-    self.leftPoint = Endpoint(left[0], left[1], True, self)
-    self.rightPoint = Endpoint(right[0], right[1], False, self)
+    def __init__(self, left, right):
+        # assumes client provides points in corrent left-right order
+        self.leftPoint = Endpoint(left[0], left[1], True, self)
+        self.rightPoint = Endpoint(right[0], right[1], False, self)
   
-  def getLeftEndpoint(self):
-    return self.leftPoint
-  
-  def getRightEndpoint(self):
-    return self.rightPoint
-        
-  def getEndpoints(self):
-    return (self.leftPoint, self.rightPoint)
+    def __str__(self):
+        return "{" + self.leftPoint + ", " + self.rightPoint + "}" 
 
+    def __repr__(self):
+        return "{" + self.leftPoint + ", " + self.rightPoint + "}" 
+
+    def getLeftEndpoint(self):
+        return self.leftPoint
+  
+    def getRightEndpoint(self):
+        return self.rightPoint
+        
+    def getEndpoints(self):
+        return (self.leftPoint, self.rightPoint)
+
+    def getCurrentY(self, x):
+        
   def getSlope(self):
     x1, y1 = self.leftPoint.coords()
     x2, y2 = self.rightPoint.coords()

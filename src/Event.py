@@ -1,7 +1,4 @@
 # Superclass for Endpoint and Intersection object types
-from functools import total_ordering
-
-@total_ordering
 class Event:
     def __init__(self, x, y):
         self.x = x # x coordinate of the intersection
@@ -29,6 +26,23 @@ class Event:
         else:
             return self.x < other.x
     
+    def __le__(self, other):
+        if self.x == other.x:
+            return self.y <= other.y
+        else:
+            return self.x <= other.x
+    
+    def __gt__(self, other):
+        if self.x == other.x:
+            return self.y > other.y
+        else:
+            return self.x > other.x
+    
+    def __ge__(self, other):
+        if self.x == other.x:
+            return self.y >= other.y
+        else:
+            return self.x >= other.x
     
     def coords(self):
         return (self.x, self.y)

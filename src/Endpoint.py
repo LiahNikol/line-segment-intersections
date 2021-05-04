@@ -1,6 +1,6 @@
 # Class for defining an endpoint belonging to a line segment
 # Inherits Event type
-from Event import Event
+from .Event import Event
 
 class Endpoint(Event):
     def __init__(self, x, y, is_left, my_segment):

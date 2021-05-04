@@ -1,12 +1,12 @@
 # Class implements the Bentley Ottmann algorithm where output is an ordered list 
 # of intersections found within in a set of segments
-from PriorityQueue import PriorityQueue
-from AVLTree import AVLTree
-from Segment import Segment
-from Endpoint import Endpoint
-from Intersection import Intersection
+from .PriorityQueue import PriorityQueue
+from .AVLTree import AVLTree
+from .Segment import Segment
+from .Endpoint import Endpoint
+from .Intersection import Intersection
 
-from helper import checkIntersect, isValidPos
+from .helper import checkIntersect, isValidPos
             
 def main(segments, debug): # [[(x_1, y_1), (x_2, y_2), ...]]
     # initializing data structures

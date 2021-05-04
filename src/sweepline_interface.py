@@ -5,7 +5,7 @@ import copy
 # Assumes that the x value is found on the line
 def affine_interp(seg, x):
     x_ratio = (x - seg.leftPoint.x) / (seg.rightPoint.x - seg.leftPoint.x)
-    y_point = (1 - x_ratio) * seg.getLeftEndpoint.y + (x_ratio) * seg.getRightEndpoint.y
+    y_point = (1 - x_ratio) * seg.leftPoint.y + (x_ratio) * seg.rightPoint.y
     return y_point
 
 class sweepline:
@@ -23,7 +23,7 @@ class sweepline:
     #   seg     - A segment to add to the list
     def add(self, seg):
         # Assume we're only adding points at left endpoint
-        x = seg.getLeftEndpoint.x
+        x = seg.leftPoint.x
         y = seg.leftPoint.y
         # Compare against each point in the sweepline linearly (temporary, inefficient solution)
         for i in range(len(self.sl)):
@@ -60,7 +60,7 @@ class sweepline:
                 continue
         # If we make it to the very end without inserting, insert the new segment at the bottom of the sweepline
         self.sl.append(seg)
-        return len(self.sl)
+        return len(self.sl) - 1
         
 
     def remove(self, seg):

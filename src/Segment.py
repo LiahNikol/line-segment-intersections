@@ -1,5 +1,5 @@
 # Class responsible for constructing segment objects
-from Endpoint import Endpoint
+from .Endpoint import Endpoint
 
 class Segment:
     def __init__(self, left, right):

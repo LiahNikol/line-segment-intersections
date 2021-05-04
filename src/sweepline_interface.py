@@ -15,6 +15,9 @@ class sweepline:
     def __len__(self):
         return len(self.sl)
 
+    def __getitem__(self, idx):
+        return self.sl[idx]
+
     def inOrder(self):
         return copy.deepcopy(self.sl)
 
@@ -30,9 +33,9 @@ class sweepline:
             # Get the y value of the given line segment at the given x-value
             compare_y = affine_interp(self.sl[i], x)
 
-            # Sweepline is implemented in order of decreasing y values
-            # If the new segment's y value is above one in the list, it should be inserted at that point
-            if y > compare_y:
+            # Sweepline is implemented in order of increasing y values (low to high)
+            # If the new segment's y value is below one in the list, it should be inserted at that point
+            if y < compare_y:
                 self.sl.insert(i, seg)
                 return i
 
@@ -49,7 +52,7 @@ class sweepline:
                 old_right_y = affine_interp(self.sl[i].rightPoint.y, x_compare)
 
                 # If the new line is above the old line, insert the new line above
-                if new_right_y > old_right_y:
+                if new_right_y < old_right_y:
                     self.sl.insert(i, seg)
                     return i
                 # Otherwise, insert the new line below
@@ -90,7 +93,7 @@ class sweepline:
             raise Exception("Segment is not in sweepline")
 
         # If there is no segment below the given one, return None
-        if idx >= len(self.sl):
+        if idx >= len(self.sl) - 1:
             return None
         # Otherwise, return the segment below the given one
         else:

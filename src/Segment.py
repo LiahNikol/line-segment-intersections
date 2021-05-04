@@ -1,5 +1,5 @@
 # Class responsible for constructing segment objects
-from .Endpoint import Endpoint
+from Endpoint import Endpoint
 
 class Segment:
     def __init__(self, left, right):
@@ -9,6 +9,9 @@ class Segment:
   
     def __str__(self):
         return "{" + self.leftPoint + ", " + self.rightPoint + "}" 
+
+    def __eq__(self, o):
+        return self.leftPoint == o.leftPoint and self.rightPoint == o.rightPoint
 
     def __repr__(self):
         return "{" + self.leftPoint + ", " + self.rightPoint + "}" 

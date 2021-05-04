@@ -1,11 +1,11 @@
 # Class contains auxiliary methods
 from numpy import array
 from numpy.linalg import det
-from .Intersection import Intersection
+from Intersection import Intersection
 
 
 def isValidPos(oPos, sl):
-  if oPos < 0 or oPos >= sl.size():
+  if oPos < 0 or oPos >= len(sl):
     return False
   return True
 
@@ -50,7 +50,7 @@ def intersects(seg1, seg2):
       intersection = (x, y)
       if orientation(l3, intersection, l4) > 0: # ccw
         return Intersection(x, y, seg2, seg1)
-      elif orientation(l3, intersection, 14) < 0: # cw
+      elif orientation(l3, intersection, l4) < 0: # cw
         return Intersection(x, y, seg1, seg2)
   return ()
     

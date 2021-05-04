@@ -49,9 +49,42 @@ class line():
         self.endpoint2.x = self.p2.x
         self.endpoint2.y = self.p2.y
 
+    def ordered(self):
+        if self.endpoint1 < self.endpoint2:
+            return ((self.endpoint1.x, self.endpoint1.y), (self.endpoint2.x, self.endpoint2.y))
+        else:
+            return ((self.endpoint2.x, self.endpoint2.y), (self.endpoint1.x, self.endpoint1.y))
+
 # This is needed because of the wonky way I'm drawing the Intersections' PriorityQueue Cards
 class Location():
     def __init__(self, x, y, data=None):
         self.x = x
         self.y = y
         self.data = data
+    
+    def __lt__(self, other):
+        if self.x == other.x:
+            return self.y < other.y
+        else:
+            return self.x < other.x
+
+    def __gt__(self, other):
+        if self.x == other.x:
+            return self.y > other.y
+        else:
+            return self.x > other.x
+
+    def __le__(self, other):
+        if self.x == other.x:
+            return self.y <= other.y
+        else:
+            return self.x <= other.x
+
+    def __ge__(self, other):
+        if self.x == other.x:
+            return self.y >= other.y
+        else:
+            return self.x >= other.x
+    
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y

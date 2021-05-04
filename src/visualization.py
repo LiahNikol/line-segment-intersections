@@ -10,6 +10,8 @@ from pyglet.window import mouse, key
 from line import line, Location
 from button import button
 
+from BentleyOttmann import bentley_ottman
+
 # GLOBAL VARIABLES 
 # configurations for the whole program. Best not to mess with them too much. 
 is_fullscreen = False
@@ -75,7 +77,7 @@ def on_mouse_press(x, y, button, modifiers):
     if mode == "draw":
         # Only draw lines when clicking in the drawing window
         if drawingBox.isClicked(x, y):
-            print("({}, {})".format(x, y))
+            # print("({}, {})".format(x, y))
             if not second_endpoint:
                 segs.append(line((x, y), (x, y), color=old_color))
                 second_endpoint = True
@@ -109,7 +111,7 @@ def on_mouse_press(x, y, button, modifiers):
                 second_endpoint = False
                 segs.pop()
             mode = "alg"
-            threading.Thread(target=run_sample_algorithm, daemon=True).start()
+            threading.Thread(target=run_algorithm, daemon=True).start()
             return
     return
 
@@ -175,13 +177,16 @@ def run_sample_algorithm():
     mode = "draw"
     return
 
-# def bentley_ottman_test():
-#     yield 1
-#     yield 2 
-#     yield 3
+def run_algorithm():
+    global mode, alg_objs, drawingBox, animation_list, pqCardSize, intersectionLocations
 
-# def run_algorithm():
-#     global mode, alg_objs, drawingBox, animation_list, pqCardSize, intersectionLocations
+    # Format all the segments
+    bo_segments = []
+    for s in segs:
+        bo_segments.append(s.ordered())
+    print(bo_segments)
+    bentley_ottman(bo_segments, debug=True)
+
 
 #     # First, we want to sort all the endpoints and move them into the priority queue.
 #     alg_objs = []
@@ -213,6 +218,9 @@ def run_sample_algorithm():
 #         elif instruction["type"] == "Done":
 #             # Display final segments and intersections
 #             break
+
+    mode = "draw"
+    return
     
 
 # Drawing to the screen

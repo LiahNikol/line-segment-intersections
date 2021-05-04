@@ -1,24 +1,26 @@
 # Class implements the Bentley Ottmann algorithm where output is an ordered list 
 # of intersections found within in a set of segments
-from .PriorityQueue import PriorityQueue
-from .AVLTree import AVLTree
-from .Segment import Segment
-from .Endpoint import Endpoint
-from .Intersection import Intersection
+from PriorityQueue import PriorityQueue
+# from .AVLTree import AVLTree
+from sweepline_interface import sweepline
+from Segment import Segment
+from Endpoint import Endpoint
+from Intersection import Intersection
 
-from .helper import checkIntersect, isValidPos
+from helper import checkIntersect, isValidPos
             
-def main(segments, debug): # [[(x_1, y_1), (x_2, y_2), ...]]
+def bentley_ottman(segments, debug=False): # [[(x_1, y_1), (x_2, y_2), ...]]
     # initializing data structures
     eq = PriorityQueue()
-    sl = AVLTree()
+    # sl = AVLTree()
+    sl = sweepline()
     output = []
     for segment in segments:
         newSeg = Segment(segment[0], segment[1])
         eq.add(newSeg.getLeftEndpoint())
         eq.add(newSeg.getRightEndpoint())
-    
-    # main algorithm
+
+    # # main algorithm
     while len(eq) > 0:
         event = eq.remove_min()
         if debug:
@@ -26,17 +28,17 @@ def main(segments, debug): # [[(x_1, y_1), (x_2, y_2), ...]]
             
         if isinstance(event, Endpoint) and event.isLeft(): # event is a left endpoint
             seg = event.mySegment()
-            segPos = sl.insert_node(seg) # add this segment to the active list
+            segPos = sl.add(seg) # add this segment to the active list
             aPos = segPos + 1
             bPos = segPos - 1
             if isValidPos(aPos, sl):
-                aCoords = checkIntersect(aPos, seg, sl)
-                if len(aCoords) > 0:
-                    eq.add(aCoords)
+                aIntersects = checkIntersect(aPos, seg, sl)
+                if len(aIntersects) > 0:
+                    eq.add(aIntersects)
             if isValidPos(bPos, sl): 
-                bIntersection = checkIntersect(bPos, seg, sl)
-                if len(bCoords) > 0:
-                    eq.add(bCoords)
+                bIntersects = checkIntersect(bPos, seg, sl)
+                if len(bIntersects) > 0:
+                    eq.add(bIntersects)
             
         elif isinstance(event, Endpoint) and event.isRight(): # event is a right endpoint
             seg = event.mySegment()
@@ -44,7 +46,7 @@ def main(segments, debug): # [[(x_1, y_1), (x_2, y_2), ...]]
             aPos = segPosition
             bPos = segPosition - 1
             if isValidPos(aPos, sl) and isValidPos(bPos, sl):
-                bSeg = sl.get(bPos)
+                bSeg = sl[bPos]
                 coords = checkIntersect(aPos, bSeg, sl)
                 if len(coords) > 0 and not eq.containsIntersection(coords):
                     eq.add(coords)

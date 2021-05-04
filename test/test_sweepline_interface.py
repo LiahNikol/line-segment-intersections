@@ -1,5 +1,5 @@
 from src.sweepline_interface import sweepline
-from src.segment import Segment
+from src.Segment import Segment
 
 # Build test segments
 segs = []

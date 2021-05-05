@@ -22,6 +22,9 @@ class PriorityQueue:
     # This method should check to make sure there are actually events in 'events' 
     # and make sure they don't already exist in the event queue. 
     # This should utilize the containsEvent method.
+    # events = None
+    # events = [i1]
+    # events = [i1, i2]
     def add_each(self, events):
         # TODO
         return None
@@ -34,11 +37,11 @@ class PriorityQueue:
             if element == event:
                 return True
         return False
-
-# This function should take all segments as a list like 
-# [((x11, y11), (x12, y12)), ((x21, y21), (x22, y22)), ...]
-# Then, it will convert these points into Segment objects and 
-# add the endpoints to the given event queue
-def initialize_event_queue(segments, eq):
-    # TODO
-    return None
+        
+    # This function should take all segments as a list like 
+    # [((x11, y11), (x12, y12)), ((x21, y21), (x22, y22)), ...]
+    # Then, it will convert these points into Segment objects and 
+    # add the endpoints to the given event queue
+    def initialize_event_queue(self, segments):
+        # TODO
+        return None

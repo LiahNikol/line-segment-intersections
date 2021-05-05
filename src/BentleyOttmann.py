@@ -14,7 +14,7 @@ def bentley_ottman(segments, debug=False): # [[(x_1, y_1), (x_2, y_2), ...]]
     eq = PriorityQueue()
     sl = sweepline()
 
-    initialize_event_queue(segments, eq)
+    eq.initialize_event_queue(segments)
 
     while len(eq) > 0:
         event = eq.get_min()

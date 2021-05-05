@@ -1,0 +1,1 @@
+# This file should be used to test the intersection-finding function 'intersects', found in Segment.py

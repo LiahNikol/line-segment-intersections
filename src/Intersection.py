@@ -7,3 +7,11 @@ class Intersection(Event):
         super().__init__(x, y)
         self.seg1 = seg1
         self.seg2 = seg2
+
+    # Function to perform once this event is removed from the event queue. 
+    # It should add the intersection to the sweepline's intersection_list
+    # and then perform the swap of the intersection's two segments. 
+    # It should return any new intersections returned by the sweepline's swap.
+    def perform(self, sl):
+        # TODO
+        return None

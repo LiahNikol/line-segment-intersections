@@ -11,11 +11,10 @@ class Endpoint(Event):
     def __eq__(self, o):
         return self.x == o.x and self.y == o.y and self.is_left == o.is_left
 
-    def isLeft(self):
-        return self.is_left
-    
-    def isRight(self):
-        return not self.is_left
-
-    def mySegment(self):
-        return self.my_segment
+    # This function should perform all the stuff that needs to happen once an endpoint is removed
+    # from the event queue. 
+    # It should just call the associated methods in the sweepline,
+    # and then return the intersections returned by the sweepline call.
+    def perform(self, sl):
+        # TODO
+        return None

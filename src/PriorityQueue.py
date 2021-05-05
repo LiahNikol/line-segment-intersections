@@ -16,15 +16,29 @@ class PriorityQueue:
         
     def add(self, event):
         heappush(self.queue, event)
+
+    # This is a convenience method for adding multiple intersections to the event queue
+    # (some operations will add multiple intersections, some will add none).
+    # This method should check to make sure there are actually events in 'events' 
+    # and make sure they don't already exist in the event queue. 
+    # This should utilize the containsEvent method.
+    def add_each(self, events):
+        # TODO
+        return None
         
     def remove_min(self):
         return heappop(self.queue) # heappop removes the "smallest" element in the heap
         
-    # log(n) ?
-    def containsIntersection(self, event):
-        x, y = event.coords()
+    def containsEvent(self, event):
         for element in self.queue:
-            if isinstance(element, Intersection) and isinstance(event, Intersection):
-                if element.coords()[0] == x and element.coords()[1] == y:
-                    return True
+            if element == event:
+                return True
         return False
+
+# This function should take all segments as a list like 
+# [((x11, y11), (x12, y12)), ((x21, y21), (x22, y22)), ...]
+# Then, it will convert these points into Segment objects and 
+# add the endpoints to the given event queue
+def initialize_event_queue(segments, eq):
+    # TODO
+    return None

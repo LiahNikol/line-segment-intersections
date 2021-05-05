@@ -11,6 +11,7 @@ def affine_interp(seg, x):
 class sweepline:
     def __init__(self):
         self.sl = []
+        self.intersection_list = []
     
     def __len__(self):
         return len(self.sl)
@@ -21,7 +22,8 @@ class sweepline:
     def inOrder(self):
         return copy.deepcopy(self.sl)
 
-    # Insert a segment into the list based on y position at the x value of the left endpoint of the new segment
+    # Insert a segment into the list based on y position at the x value of the left endpoint of the new segment.
+    # Return any intersections formed by this segment and its neighboring segments.
     # Input:
     #   seg     - A segment to add to the list
     def add(self, seg):
@@ -64,8 +66,11 @@ class sweepline:
         # If we make it to the very end without inserting, insert the new segment at the bottom of the sweepline
         self.sl.append(seg)
         return len(self.sl) - 1
-        
+    
 
+    # Remove a segment from the sweepline.
+    # Returns any intersections formed by the segment immediately above and immediately below the 
+    # removed segment.
     def remove(self, seg):
         # Just use the list's methods
         try:
@@ -73,31 +78,6 @@ class sweepline:
         except:
             raise Exception("Segment is not in sweepline")
 
-    def findAbove(self, seg):
-        try:
-            idx = self.sl.index(seg)
-        except:
-            raise Exception("Segment is not in sweepline")
-
-        # If there is no segment above the given one, return None
-        if idx <= 0:
-            return None
-        # Otherwise, return the segment above the given one
-        else:
-            return self.sl[idx - 1]
-    
-    def findBelow(self, seg):
-        try:
-            idx = self.sl.index(seg)
-        except:
-            raise Exception("Segment is not in sweepline")
-
-        # If there is no segment below the given one, return None
-        if idx >= len(self.sl) - 1:
-            return None
-        # Otherwise, return the segment below the given one
-        else:
-            return self.sl[idx + 1]
 
     def swap(self, seg1, seg2):
         try:

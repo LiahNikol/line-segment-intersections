@@ -1,8 +1,8 @@
 # Priority Queue data structure used for the event queue in the B-O algorithm
 # Utilizes heapq functions to maintain O(logn) complexity
 from heapq import heapify, heappush, heappop
-from Intersection import Intersection
-from Segment import Segment
+from .Intersection import Intersection
+from .Segment import Segment
 
 class PriorityQueue:
     def __init__(self):

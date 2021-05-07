@@ -1,13 +1,13 @@
 # Class implements the Bentley Ottmann algorithm where output is an ordered list 
 # of intersections found within in a set of segments
-from PriorityQueue import PriorityQueue, initialize_event_queue
+from .PriorityQueue import PriorityQueue
 # from .AVLTree import AVLTree
-from sweepline_interface import sweepline
-from Segment import Segment
-from Endpoint import Endpoint
-from Intersection import Intersection
+from .sweepline_interface import sweepline
+from .Segment import Segment
+from .Endpoint import Endpoint
+from .Intersection import Intersection
 
-from helper import checkIntersect, isValidPos
+from .helper import checkIntersect, isValidPos
 
 def bentley_ottman(segments, debug=False): # [[(x_1, y_1), (x_2, y_2), ...]]
     # Our basic data structures
@@ -17,8 +17,8 @@ def bentley_ottman(segments, debug=False): # [[(x_1, y_1), (x_2, y_2), ...]]
     eq.initialize_event_queue(segments)
 
     while len(eq) > 0:
-        event = eq.get_min()
+        event = eq.remove_min()
         rv = event.perform(sl)
         eq.add_each(rv)
 
-    return sl.get_intersections()
+    return sl.intersection_list

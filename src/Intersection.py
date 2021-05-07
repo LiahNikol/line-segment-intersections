@@ -1,6 +1,6 @@
 # Class defining an intersection of two line segments 
 # Inherits Event type
-from Event import Event
+from .Event import Event
 
 class Intersection(Event):
     def __init__(self, x, y, seg1, seg2):
@@ -13,5 +13,4 @@ class Intersection(Event):
     # and then perform the swap of the intersection's two segments. 
     # It should return any new intersections returned by the sweepline's swap.
     def perform(self, sl):
-        # TODO
-        return None
+        return sl.handle_intersection(self)

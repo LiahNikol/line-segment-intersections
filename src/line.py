@@ -1,7 +1,7 @@
 import numpy as np
 import pyglet
 from pyglet import shapes
-from button import button
+from .button import button
 
 endpoint_radius = 10
 line_width = 6

@@ -1,5 +1,6 @@
 import numpy as np
 import copy
+from .Segment import intersects
 
 # Find the y value of the line segment at the given x value
 # Assumes that the x value is found on the line
@@ -27,69 +28,71 @@ class sweepline:
     # Input:
     #   seg     - A segment to add to the list
     def add(self, seg):
-        # Assume we're only adding points at left endpoint
-        x = seg.leftPoint.x
-        y = seg.leftPoint.y
-        # Compare against each point in the sweepline linearly (temporary, inefficient solution)
-        for i in range(len(self.sl)):
-            # Get the y value of the given line segment at the given x-value
-            compare_y = affine_interp(self.sl[i], x)
-
-            # Sweepline is implemented in order of increasing y values (low to high)
-            # If the new segment's y value is below one in the list, it should be inserted at that point
-            if y < compare_y:
-                self.sl.insert(i, seg)
-                return i
-
-            # If the new segment has the exact same y value as the one in the list, it should be inserted based
-            # on the y position of the right endpoints
-            elif y == compare_y:
-                # we have to compare y points at a common x value
-                new_right_x = seg.rightPoint.x
-                old_right_x = self.sl[i].rightPoint.x
-                x_compare = min(new_right_x, old_right_x)
-
-                # Find the y values that we're going to compare
-                new_right_y = affine_interp(seg.rightPoint.y, x_compare)
-                old_right_y = affine_interp(self.sl[i].rightPoint.y, x_compare)
-
-                # If the new line is above the old line, insert the new line above
-                if new_right_y < old_right_y:
-                    self.sl.insert(i, seg)
-                    return i
-                # Otherwise, insert the new line below
-                else:
-                    self.sl.insert(i + 1, seg)
-                    return i + 1
-            else:
-                continue
-        # If we make it to the very end without inserting, insert the new segment at the bottom of the sweepline
+        # Add segment to sweepline and sort it based on y value of each segment at the given left endpoint
+        # If the y-values are equal, sort based on the y value at the segment's right endpoint
         self.sl.append(seg)
-        return len(self.sl) - 1
-    
+        self.sl = sorted(self.sl, key=lambda x: [affine_interp(x, seg.leftPoint.x), affine_interp(x, seg.rightPoint.x)])
+
+        # Check for intersections
+        return self.check_for_intersections(seg, above=True, below=True)
 
     # Remove a segment from the sweepline.
     # Returns any intersections formed by the segment immediately above and immediately below the 
     # removed segment.
     def remove(self, seg):
-        # Just use the list's methods
-        try:
-            self.sl.remove(seg)
-        except:
-            raise Exception("Segment is not in sweepline")
+        idx = self.sl.index(seg)
+        self.sl.remove(seg)
+
+        return_list = []
+        if idx > 0 and idx < len(self.sl):
+            return_list.extend(self.check_for_intersections(self.sl[idx], above=False, below=True))
+        return return_list
+
+    # Add the intersection to the sweepline's intersection list,
+    # Then swap the two given segments,
+    # Then check for more intersections
+    def handle_intersection(self, i):
+        # Add to the intersection list
+        self.intersection_list.append(i)
+
+        # Swap the segments
+        idx1 = self.sl.index(i.seg1)
+        idx2 = self.sl.index(i.seg2)
+        self.sl[idx1] = i.seg2
+        self.sl[idx2] = i.seg1
+
+        # Check for new intersections
+        return_list = []
+        if idx2 > 0:
+            return_list.extend(self.check_for_intersections(i.seg1, above=False, below=True))
+        if idx1 < len(self.sl) - 1:
+            return_list.extend(self.check_for_intersections(i.seg2, above=True, below=False))
+
+        return return_list
 
 
-    def swap(self, seg1, seg2):
-        try:
-            idx1 = self.sl.index(seg1)
-            idx2 = self.sl.index(seg2)
-        except:
-            raise Exception("Segment is not in sweepline")
+    # Given a segment, check for intersections. Return any intersections that need to be added to the event queue.
+    def check_for_intersections(self, seg, above=True, below=True):
+        idx = self.sl.index(seg)
+        intersections = []
 
-        # If the given segments aren't next to each other, don't swap them
-        if abs(idx1 - idx2) != 1:
-            raise Exception("Segments cannot be swapped, they are not next to each other")
-        # Otherwise, swap the two segments
-        else:
-            self.sl[idx1] = seg2
-            self.sl[idx2] = seg1
+        # Only check for intersections if we're supposed to, and we're able to
+        if below and idx > 0:
+            intersections.append(intersects(seg, self.sl[idx - 1]))
+        if above and idx < len(self.sl) - 1:
+            intersections.append(intersects(seg, self.sl[idx + 1]))
+
+        # Filter out and handle any intersections that deal with endpoints, or any segments that didn't result in intersections.
+        rl = []
+        for i in intersections:
+            # This is the case that there was no intersection
+            if i is None:
+                continue
+            else: 
+                # If the intersection point is at an endpoint, we will add it to our intersections list but not to our sweepline.
+                if i.seg1.is_endpoint((i.x, i.y)) or i.seg2.is_endpoint((i.x, i.y)):
+                    self.intersection_list.append(i)
+                    continue
+                else:
+                    rl.append(i)
+        return rl

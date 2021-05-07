@@ -1,7 +1,7 @@
 # Class contains auxiliary methods
 from numpy import array
 from numpy.linalg import det
-from Intersection import Intersection
+from .Intersection import Intersection
 
 
 def isValidPos(oPos, sl):

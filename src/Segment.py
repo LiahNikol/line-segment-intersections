@@ -11,7 +11,7 @@ class Segment:
         self.rightPoint = Endpoint(right[0], right[1], False, self)
   
     def __str__(self):
-        return "{" + self.leftPoint + ", " + self.rightPoint + "}" 
+        return "{{{}, {}}}".format(self.leftPoint, self.rightPoint) 
 
     def __eq__(self, o):
         return self.leftPoint == o.leftPoint and self.rightPoint == o.rightPoint
@@ -47,20 +47,30 @@ def intersects(segA, segB):
     o4 = orientation(b_left, b_right, a_right)
 
     if o1 != o2 and o3 != o4:
-        # TODO: Figure out what to do if a segment is completely vertical
+        # Handling the cases when you have a completely vertical line
+        if a_right[0] - a_left[0] == 0:
+            slopeB = (b_right[1] - b_left[1]) / (b_right[0] - b_left[0])
+            yi_B = b_left[1] - slopeB * b_left[0]
+            x_coord = a_left[0]
+            y_coord = slopeB * x_coord + yi_B
+        elif b_right[0] - b_left[0] == 0:
+            slopeA = (a_right[1] - a_left[1]) / (a_right[0] - a_left[0])
+            yi_A = a_left[1] - slopeA * a_left[0]
+            x_coord = b_left[0]
+            y_coord = slopeA * x_coord + yi_A
+        else:
+            # Find intersection point
+            # Code is from Liah's earlier code in helper.py
+            # First calculate slopes of each line segment
+            slopeA = (a_right[1] - a_left[1]) / (a_right[0] - a_left[0])
+            slopeB = (b_right[1] - b_left[1]) / (b_right[0] - b_left[0])
+            # Calculate y-intercept of each line segment
+            yi_A = a_left[1] - slopeA * a_left[0]
+            yi_B = b_left[1] - slopeB * b_left[0]
 
-        # Find intersection point
-        # Code is from Liah's earlier code in helper.py
-        # First calculate slopes of each line segment
-        slopeA = (a_right[1] - a_left[1]) / (a_right[0] - a_left[0])
-        slopeB = (b_right[1] - b_left[1]) / (b_right[0] - b_left[0])
-        # Calculate y-intercept of each line segment
-        yi_A = a_left[1] - slopeA * a_left[0]
-        yi_B = b_left[1] - slopeB * b_left[0]
-
-        # Calculate intersection point
-        x_coord = (yi_B - yi_A) / (slopeA - slopeB)
-        y_coord = slopeA * x_coord + yi_A
+            # Calculate intersection point
+            x_coord = (yi_B - yi_A) / (slopeA - slopeB)
+            y_coord = slopeA * x_coord + yi_A
 
         intersection_orientation = orientation(a_left, b_left, [x_coord, y_coord, 1])
         # If a left endpoint is the intersection point, then this orientation test is 0.

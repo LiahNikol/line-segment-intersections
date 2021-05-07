@@ -5,13 +5,16 @@ from .Segment import intersects
 # Find the y value of the line segment at the given x value
 # Assumes that the x value is found on the line
 def affine_interp(seg, x):
+    # TODO: What do we do in the case of vertical lines?
+    
     x_ratio = (x - seg.leftPoint.x) / (seg.rightPoint.x - seg.leftPoint.x)
     y_point = (1 - x_ratio) * seg.leftPoint.y + (x_ratio) * seg.rightPoint.y
     return y_point
 
 class sweepline:
-    def __init__(self):
+    def __init__(self, debug=False):
         self.sl = []
+        self.debug = debug
         self.intersection_list = []
     
     def __len__(self):
@@ -28,6 +31,9 @@ class sweepline:
     # Input:
     #   seg     - A segment to add to the list
     def add(self, seg):
+        if self.debug:
+            print("Adding {}".format(seg))
+
         # Add segment to sweepline and sort it based on y value of each segment at the given left endpoint
         # If the y-values are equal, sort based on the y value at the segment's right endpoint
         self.sl.append(seg)
@@ -40,6 +46,8 @@ class sweepline:
     # Returns any intersections formed by the segment immediately above and immediately below the 
     # removed segment.
     def remove(self, seg):
+        if self.debug:
+            print("Removing {}".format(seg))
         idx = self.sl.index(seg)
         self.sl.remove(seg)
 
@@ -52,6 +60,9 @@ class sweepline:
     # Then swap the two given segments,
     # Then check for more intersections
     def handle_intersection(self, i):
+        if self.debug:
+            print("Swapping {}, {}".format(i.seg1, i.seg2))
+
         # Add to the intersection list
         self.intersection_list.append(i)
 
@@ -89,6 +100,9 @@ class sweepline:
             if i is None:
                 continue
             else: 
+                # We don't want to place repeat intersections in the priority queue
+                if i in self.intersection_list:
+                    continue
                 # If the intersection point is at an endpoint, we will add it to our intersections list but not to our sweepline.
                 if i.seg1.is_endpoint((i.x, i.y)) or i.seg2.is_endpoint((i.x, i.y)):
                     self.intersection_list.append(i)

@@ -2,6 +2,7 @@
 from src.PriorityQueue import PriorityQueue
 from src.Segment import Segment
 from src.Intersection import Intersection
+from src.Endpoint import Endpoint
     
 def test_add_each_endpoints():
     pq = PriorityQueue()
@@ -208,3 +209,9 @@ def test_contains_event():
     
     assert len(pq) == 8, "Length of priority queue was " + str(len(pq))
     print(pq)
+
+def test_object_types():
+    e = Endpoint(0, 1, False, Segment((0, 0), (2, 0)))
+    i = Intersection(0, 1, Segment((0, 0), (2, 0)), Segment((0, 0), (2, 0)))
+
+    assert(i != e)

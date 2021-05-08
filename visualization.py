@@ -20,7 +20,6 @@ background_color = (1, 1, 1)
 old_color = (0, 0, 0)
 new_color = (100, 200, 150)
 border_size = 100
-pqCardSize = (60,60)
 mode = "draw"
 
 whiteText = (255, 255, 255, 255)
@@ -28,15 +27,12 @@ blackText = (0, 0, 0, 255)
 
 # List of drawn segments
 segs = []
-alg_objs = []
+# List of drawn segments during algorithm runtime
+alg_segs = []
+alg_segment = line((0, 0), (1, 1), color=old_color)
+sweepline_line = shapes.Line(0, 0, 1, 1, width = 2, color=old_color)
 intersectionLocations = []
-pqCardLocations = []
-pqCardLeftColor = ( 191, 244, 98 )
-pqCardRightColor = ( 244, 198, 98 )
-pqCardIntersectColor = ( 234, 151, 207 )
-pqCard = button("1L", x=0, y=0, width=pqCardSize[0] - 10, height=pqCardSize[1] - 10, buttonColor=(150, 150, 150), textColor=whiteText, font_size=12)
-endpoint = shapes.Circle(0, 1, 10, color=(0,0,0))
-intersectionPoint = shapes.Circle(0, 0, 5, color=(200, 50, 50))
+intersectionPoint = shapes.Circle(0, 0, 8, color=(200, 50, 50))
 
 # Generate the buttons
 clearButton = button("CLEAR", x=70, y=30, width=140, height=60, buttonColor=(232, 229, 140), textColor=(255, 255, 255, 255), statechange=None)
@@ -44,12 +40,6 @@ algButton = button("RUN", x=190, y=30, width=100, height=60, buttonColor=(140, 2
 ex1Button = button("Ex. 1", x=300, y=30, width=120, height=60, buttonColor=(243, 124, 68), textColor=(255, 255, 255, 255), statechange=None)
 ex2Button = button("Ex. 2", x=420, y=30, width=120, height=60, buttonColor=(243, 177, 68), textColor=(255, 255, 255, 255), statechange=None)
 drawingBox = button("", x=window_size[0] / 2.0, y=window_size[1] / 2.0, width=window_size[0] - border_size * 2, height=window_size[1] - border_size * 2, buttonColor=(230, 230, 230), textColor=(255, 255, 255, 255), statechange=None)
-
-# Algorithm Labels
-pqBackground = shapes.Rectangle(x=0, y=window_size[1] - border_size + 15, width=window_size[0], height=border_size - 30, color=(200, 200, 200))
-pqText = pyglet.text.Label(text="Priority\nQueue", x=border_size * 0.5, y=window_size[1] - border_size * 0.5, align='center', anchor_x='center', anchor_y='center', font_name="Helvetica", font_size=12, bold=True, color=(0,0,0,255), multiline=True, width=border_size)
-slBackground = shapes.Rectangle(x=window_size[0] - border_size + 15, y=0, width=border_size - 30, height=window_size[1] - border_size, color=(200, 200, 200))
-slText = pyglet.text.Label(text="Sweep\nLine", x=window_size[0] - border_size * 0.5, y=window_size[1] - border_size - 30, align='center', anchor_x='center', anchor_y='center', font_name="Helvetica", font_size=12, bold=True, color=(0,0,0,255), multiline=True, width=border_size)
 
 # Example segments
 ex1_points = [(185, 285), (420, 454), (353, 169), (624, 364), (185, 388), (458, 161), (507, 371), (649, 259)]
@@ -125,61 +115,6 @@ def on_mouse_motion(x, y, dx, dy):
     if second_endpoint:
         segs[-1].move_endpoint((x, y))
 
-# Entries in animation_list should be a dictionary with the following:
-#   obj => object whose position is being updated (with obj.x = and obj.y =)
-#   Pi  => Initial position (x, y)
-#   Pf  => Final position (x, y)
-#   time => length of time (in seconds) for the animation to play)
-#   startTime => start time in milliseconds (from time.time() * 1000.0)
-animation_list = []
-def update_animations():
-    global animation_list
-    for anim in animation_list:
-        current_time = round(time.time() * 1000.0)
-        ratio = (current_time - anim["startTime"]) / (anim["time"] * 1000.0)
-        if ratio >= 1.0:
-            if isinstance(anim["obj"], button):
-                anim["obj"].move(anim["Pf"][0], anim["Pf"][1])
-            else: 
-                anim["obj"].x = anim["Pf"][0]
-                anim["obj"].y = anim["Pf"][1]
-            animation_list.remove(anim)
-        else:
-            if isinstance(anim["obj"], button):
-                anim["obj"].move(anim["Pi"][0] * (1.0 - ratio) + anim["Pf"][0] * ratio, anim["Pi"][1] * (1.0 - ratio) + anim["Pf"][1] * ratio)
-            else:
-                anim["obj"].x = anim["Pi"][0] * (1.0 - ratio) + anim["Pf"][0] * ratio
-                anim["obj"].y = anim["Pi"][1] * (1.0 - ratio) + anim["Pf"][1] * ratio
-
-def run_sample_algorithm():
-    global mode, alg_objs, drawingBox, animation_list, pqCardSize, intersectionLocations
-
-    # Draw only the endpoints
-    alg_objs = []
-    for l in segs:
-        alg_objs.append(l.endpoint1)
-        alg_objs.append(l.endpoint2)
-    # Sort all the endpoints and move them to the PriorityQueue area
-    alg_objs = sorted(alg_objs, key=lambda o: (o.x, o.y))
-    target_xs = [drawingBox.x - 0.5 * drawingBox.width + 0.5 * pqCardSize[0] + pqCardSize[0] * x for x in range(len(alg_objs))]
-    for o in range(len(alg_objs)):
-        animation_list.append({"obj":alg_objs[o], "Pi":(alg_objs[o].x, alg_objs[o].y), "Pf":(target_xs[o], window_size[1] - 0.5 * border_size), "time":2.5, "startTime":(time.time() * 1000)})
-    time.sleep(5)
-    # Replacing all the endpoints with INTERSECTION PQ Cards
-    for o in segs:
-        intersectionLocations.append(Location(o.endpoint1.x, o.endpoint1.y))
-        intersectionLocations.append(Location(o.endpoint2.x, o.endpoint2.y))
-        o.reset_endpoints()
-    alg_objs = []
-    time.sleep(5)
-    # Sliding all those PQ cards off the screen
-    for o in intersectionLocations:
-        animation_list.append({"obj":o, "Pi":(o.x, o.y), "Pf":(window_size[0] + o.x, window_size[1] - 0.5 * border_size), "time":2.5, "startTime":(time.time() * 1000)})
-    time.sleep(5)
-    intersectionLocations = []
-    mode = "draw"
-    return
-
 def run_algorithm():
     global mode, alg_objs, drawingBox, animation_list, pqCardSize, intersectionLocations
 
@@ -188,7 +123,22 @@ def run_algorithm():
     for s in segs:
         bo_segments.append(s.ordered())
     # print(bo_segments)
-    intersectionLocations = bentley_ottman(bo_segments, debug=True)
+    intersectionLocations, log = bentley_ottman(bo_segments, debug=True, log=True)
+
+    for action in log:
+        if "point" in action:
+            sweepline_line.x = action["point"][0]
+            sweepline_line.y = drawingBox.btn.y
+            sweepline_line.x2= action["point"][0] 
+            sweepline_line.y2= drawingBox.btn.y + drawingBox.btn.height
+        time.sleep(0.5)
+        if action["event"] == "add":
+            alg_segs.append(action["seg"])
+        elif action["event"] == "remove":
+            alg_segs.remove(action["seg"])
+        else:
+            continue
+        time.sleep(0.5)
     mode = "draw"
     return
     
@@ -215,34 +165,11 @@ def on_draw():
     elif mode == "alg":
         drawingBox.draw()
 
-        update_animations()
-
-        pqBackground.draw()
-        pqText.draw()
-        slBackground.draw()
-        slText.draw()
-
-        pqCard.text.text = "INT"
-        pqCard.btn.color = pqCardIntersectColor
-        pqCard.text.color = whiteText
-        for p in intersectionLocations:
-            pqCard.move(p.x, p.y)
-            pqCard.draw()
-
-        pqCard.text.color = blackText
-        for p in pqCardLocations:
-            if p.data["LR"] == "L":
-                pqCard.btn.color = pqCardLeftColor
-            else:
-                pqCard.btn.color = pqCardRightColor
-            pqCard.text.text = "{}{}".format(p.data["num"], p.data["LR"])
-            pqCard.move(p.x, p.y)
-            pqCard.draw()
-        
-        for o in alg_objs:
-            endpoint.x = o.x
-            endpoint.y = o.y
-            endpoint.draw()
+        for o in alg_segs:
+            alg_segment.move_endpoint((o.leftPoint.x, o.leftPoint.y), p1=True)
+            alg_segment.move_endpoint((o.rightPoint.x, o.rightPoint.y))
+            alg_segment.draw()
+        sweepline_line.draw()
 
 # I need this wrapper so that we can schedule the draw function to trigger consistently
 def on_draw_wrapper(dt):

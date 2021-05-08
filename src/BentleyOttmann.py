@@ -9,12 +9,12 @@ from .Intersection import Intersection
 
 from .helper import checkIntersect, isValidPos
 
-def bentley_ottman(segments, debug=False): # [[(x_1, y_1), (x_2, y_2), ...]]
+def bentley_ottman(segments, debug=False, log=False): # [[(x_1, y_1), (x_2, y_2), ...]]
     if debug:
         print("-----bentley-ottman-start-----")
     # Our basic data structures
     eq = PriorityQueue()
-    sl = sweepline(debug=True)
+    sl = sweepline(debug=True, log=log)
 
     eq.initialize_event_queue(segments)
 
@@ -28,4 +28,8 @@ def bentley_ottman(segments, debug=False): # [[(x_1, y_1), (x_2, y_2), ...]]
     if debug:
         print("Final Intersections: {}".format(sl.intersection_list))
         print("-----bentley-ottman-end-----")
-    return sl.intersection_list
+
+    if log:
+        return sl.intersection_list, sl.actionlog
+    else:
+        return sl.intersection_list

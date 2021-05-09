@@ -1,7 +1,7 @@
 # Class represents a balanced binary tree for the sweepline structure in the B-O algorithm
 # Advantageous because operations should maintain o(logn) time
-from Node import Node
-from sweepline_interface import affine_interp
+from .Node import Node
+from .sweepline_interface import affine_interp
 
 class AVLTree:
     def __init__(self):

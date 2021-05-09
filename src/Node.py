@@ -5,12 +5,5 @@ class Node:
         self.value = value
         self.left = None
         self.right = None
-    
-    def getValue(self):
-        return self.value
-
-    def getLeft(self):
-        return self.left
-
-    def getRight(self):
-        return self.right
+        self.parent = None
+        self.balance_factor = -1

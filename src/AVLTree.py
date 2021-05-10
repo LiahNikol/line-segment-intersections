@@ -51,44 +51,166 @@ class AVLTree:
             root.right.parent = root
             
         # balancing logic 
+        restructure(root)
+        
+        # update current root's height
+        updateBalanceFactor(root)
         
         return root
+    
+    def restructure(self, root):
+        balanceLeft = 0 if root.left == None else root.left.balance_factor
+        balanceRight = 0 if root.right == None else root.right.balance_factor
+        if Math.abs(balanceLeft - balanceRight) <= 1:
+            return
+            
+        z = root
+        zLeftChild = False
+        y = None
+        
+        if root.right != None and root.left == None:
+            y = root.right
+            zLeftChild = False
+        elif root.left != None and root.right == None:
+            y = root.left
+            zLeftChild = True
+        else:
+            if root.left.balance_factor > root.right.balance_factor:
+                y = root.left
+                zLeftChild = True
+            else:
+                y = root.right
+                zLeftChild = False
+                
+        x = None
+        yLeftChild = False
+        
+        if y.right != None and y.left == None:
+            x = root.right
+            yLeftChild = False
+        elif y.left != None and y.right == None:
+            x = root.left
+            yLeftChild = True
+        else:
+            if y.left.balance_factor > y.right.balance_factor:
+                x = root.left
+                yLeftChild = True
+            else:
+                x = y.right
+                yLeftChild = False
+        
+        # rebalancing
+        if zLeftChild != yLeftChild:
+            # bent
+            if zLeftChild:
+                y.right = x.left
+                x.left = y 
+                y.right.parent  = y
+                y.parent = x
+                x.parent = z
+                z.left = x
+            else:
+                y.left = x.right
+                x.right = y
+                y.left.parent = y
+                y.parent = x
+                x.parent = z
+                z.right = x
+            temp = x
+            x = y
+            y = temp
+        
+        # in line
+        if zLeftChild:
+            z.left = y.right
+            z.left.parent = z
+            tempParent = z.parent
+            z.parent = y
+            y.right = z
+            y.parent = tempParent
+            if tempParent != None:
+                if tempParent.left == z:
+                    tempParent.left = y
+                else:
+                    tempParent.right = y
+        else:
+            z.right = y.left
+            z.right.parent = z
+            tempParent = z.parent
+            z.parent = y
+            y.left = z
+            y.parent = tempParent
+            if tempParent != None:
+                if tempParent.left == z:
+                    tempParent.left = y
+                else:
+                    tempParent.right = y
+        
+        updateBalanceFactor(x)
+        updateBalanceFactor(z)
+        updateBalanceFactor(y)
+        
+    def updateBalanceFactor(self, node):
+        balanceLeft = 0 if root.left == None else root.left.balance_factor
+        balanceRight = 0 if root.right == None else root.right.balance_factor
+        node.balance_factor = Math.max(balanceLeft, balanceRight) 
         
     def remove(self, segment):
+        restructureStart = None
         self.size -= 1
         node = self.get(segment)
         segment.node = None
         if node.left == None and node.right == None: # no children
             if node.parent != None:
-                if node.parent.left == node:
+                if node.parent.left == node: # determine whether removal node is left or right child
                     node.parent.left = None
                 else:
                     node.parent.right = None
+                # balance
+                restructureStart = node.parent
             else:
                 self.root = None
-        elif node.right == None:
-            node.left.parent = node.parent
+        elif node.right == None: # only left child present
+            node.left.parent = node.parent # connecting present child to node's parent
             if node.parent.left == node:
                 node.parent.left = node.left
             else:
                 node.parent.right = node.left
-        elif node.left == Node:
+            # balance
+            restructureStart = node.parent
+        elif node.left == Node: # only right child present
             node.right.parent = node.parent
             if node.parent.left == node:
                 node.parent.left = node.right
             else:
                 node.parent.right = node.right
-        else: 
+            # balance
+            restructureStart = node.parent
+        else: # both children present
             replacementNode = node.right
             while replacementNode.left != None:
                 replacementNode = replacementNode.left
+            # balance
+            restructureStart = replacementNode.parent
             node.value = replacementNode.value
             replacementNode.parent.left = replacementNode.right
             replacementNode.right.parent = replacementNode.parent
             node.value.node = node
+        
+        while restructureStart != None:
+            restructure(restructureStart)
+            updateBalanceFactor(restructureStart)
+            restructureStart = restructureStart.parent
             
-    def swap(self):
-        return #Just so this compiles for now
+        return
+        
+    def swap(self, seg1, seg2):
+        seg1.node.value = seg2
+        seg2.node.value = seg1
+        temp = seg1.node
+        seg1.node = seg2.node
+        seg2.node = temp
+        return
         
     def findAbove(self, segment):
         # leftmost child of the right subtree
@@ -119,4 +241,4 @@ class AVLTree:
             belowNode = belowNode.right
     
         return belowNode.value
-  
+    

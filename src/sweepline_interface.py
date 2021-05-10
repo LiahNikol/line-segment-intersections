@@ -125,7 +125,7 @@ class sweepline:
                 if i in self.intersection_list:
                     continue
                 # If the intersection point is at an endpoint, we will add it to our intersections list but not to our sweepline.
-                if i.seg1.is_endpoint((i.x, i.y)) or i.seg2.is_endpoint((i.x, i.y)):
+                elif i.seg1.is_endpoint((i.x, i.y)) or i.seg2.is_endpoint((i.x, i.y)):
                     self.intersection_list.append(i)
                     continue
                 else:

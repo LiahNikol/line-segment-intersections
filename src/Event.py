@@ -11,7 +11,7 @@ class Event:
         return "(" + str(self.x) + ", " + str(self.y) + ")"
     
     def __eq__(self, other):
-        if self.x == other.x and self.y == other.y:
+        if self.x == other.x and self.y == other.y and type(self) == type(other):
             return True
         return False
   

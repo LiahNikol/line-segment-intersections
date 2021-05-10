@@ -9,7 +9,7 @@ class Endpoint(Event):
         self.my_segment = my_segment # pointer to segment object that this endpoint belongs to
 
     def __eq__(self, o):
-        return self.x == o.x and self.y == o.y and self.is_left == o.is_left
+        return isinstance(o, type(self)) and self.x == o.x and self.y == o.y and self.is_left == o.is_left
 
     def __repr__(self):
         return "({}, {}):{}".format(self.x, self.y, "left" if self.is_left else "right")

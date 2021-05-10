@@ -34,11 +34,13 @@ def test_add_each_intersections():
     assert len(pq) == 2, "Length of priority queue was " + str(len(pq))
     
     # try to add a singular intersection
+    # This shouldn't work because there's already an intersection for these segments in the pq
     i3 = Intersection(4, 6, s1, s2)
-    pq.add_each([i3])
+    i4 = Intersection(4, 6, s2, s1)
+    pq.add_each([i3, i4])
     
     print(pq)
-    assert len(pq) == 3, "Length of priority queue was " + str(len(pq))
+    assert len(pq) == 2, "Length of priority queue was " + str(len(pq))
 
 # Test that both types of events are ordered correctly in the priority queue
 def test_add_each_events():
@@ -116,7 +118,7 @@ def test_initialize_event_queue():
     s3 = Segment((3, 7), (6, 8))
     eq.initialize_event_queue([((2, 4), (4, 6)), ((2, 6), (5, 5)), ((3, 7), (6, 8))])
     
-    assert len(eq) == 6, "Length of priority queue was " + str(len(pq))
+    assert len(eq) == 6, "Length of priority queue was " + str(len(eq))
     
     # check that queue is sorted
     
@@ -209,9 +211,3 @@ def test_contains_event():
     
     assert len(pq) == 8, "Length of priority queue was " + str(len(pq))
     print(pq)
-
-def test_object_types():
-    e = Endpoint(0, 1, False, Segment((0, 0), (2, 0)))
-    i = Intersection(0, 1, Segment((0, 0), (2, 0)), Segment((0, 0), (2, 0)))
-
-    assert(i != e)

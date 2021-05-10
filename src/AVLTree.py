@@ -2,6 +2,7 @@
 # Advantageous because operations should maintain o(logn) time
 from .Node import Node
 from .sweepline_interface import affine_interp
+from .Intersection import Intersection
 
 class AVLTree:
     def __init__(self):
@@ -39,7 +40,7 @@ class AVLTree:
         rootY = affine_interp(root.value, segX)
         
         if segY == rootY:
-            self.intersections.append(Intersections(segX, rootY, root.value, segment))
+            self.intersections.append(Intersection(segX, rootY, root.value, segment))
             segX, segY = segment.rightPoint.coords()
             rootY = affine_interp(root.value, segX)
         
@@ -51,17 +52,17 @@ class AVLTree:
             root.right.parent = root
             
         # balancing logic 
-        restructure(root)
+        self.restructure(root)
         
         # update current root's height
-        updateBalanceFactor(root)
+        self.updateBalanceFactor(root)
         
         return root
     
     def restructure(self, root):
         balanceLeft = 0 if root.left == None else root.left.balance_factor
         balanceRight = 0 if root.right == None else root.right.balance_factor
-        if Math.abs(balanceLeft - balanceRight) <= 1:
+        if abs(balanceLeft - balanceRight) <= 1:
             return
             
         z = root
@@ -146,14 +147,14 @@ class AVLTree:
                 else:
                     tempParent.right = y
         
-        updateBalanceFactor(x)
-        updateBalanceFactor(z)
-        updateBalanceFactor(y)
+        self.updateBalanceFactor(x)
+        self.updateBalanceFactor(z)
+        self.updateBalanceFactor(y)
         
     def updateBalanceFactor(self, node):
-        balanceLeft = 0 if root.left == None else root.left.balance_factor
-        balanceRight = 0 if root.right == None else root.right.balance_factor
-        node.balance_factor = Math.max(balanceLeft, balanceRight) 
+        balanceLeft = 0 if node.left == None else node.left.balance_factor
+        balanceRight = 0 if node.right == None else node.right.balance_factor
+        node.balance_factor = max(balanceLeft, balanceRight) 
         
     def remove(self, segment):
         restructureStart = None
@@ -198,8 +199,8 @@ class AVLTree:
             node.value.node = node
         
         while restructureStart != None:
-            restructure(restructureStart)
-            updateBalanceFactor(restructureStart)
+            self.restructure(restructureStart)
+            self.updateBalanceFactor(restructureStart)
             restructureStart = restructureStart.parent
             
         return

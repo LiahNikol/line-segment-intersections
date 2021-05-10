@@ -52,18 +52,19 @@ class AVLTree:
             root.right.parent = root
             
         # balancing logic 
-        self.restructure(root)
-        
-        # update current root's height
-        self.updateBalanceFactor(root)
-        
-        return root
+        newroot = self.restructure(root)
+        if newroot != None:
+            return newroot
+        else:
+            # update current root's height
+            self.updateBalanceFactor(root)
+            return root
     
     def restructure(self, root):
         balanceLeft = 0 if root.left == None else root.left.balance_factor
         balanceRight = 0 if root.right == None else root.right.balance_factor
         if abs(balanceLeft - balanceRight) <= 1:
-            return
+            return None
             
         z = root
         zLeftChild = False
@@ -124,7 +125,8 @@ class AVLTree:
         # in line
         if zLeftChild:
             z.left = y.right
-            z.left.parent = z
+            if z.left != None:
+                z.left.parent = z
             tempParent = z.parent
             z.parent = y
             y.right = z
@@ -136,7 +138,8 @@ class AVLTree:
                     tempParent.right = y
         else:
             z.right = y.left
-            z.right.parent = z
+            if z.right != None:
+                z.right.parent = z
             tempParent = z.parent
             z.parent = y
             y.left = z
@@ -150,11 +153,13 @@ class AVLTree:
         self.updateBalanceFactor(x)
         self.updateBalanceFactor(z)
         self.updateBalanceFactor(y)
+
+        return y
         
     def updateBalanceFactor(self, node):
         balanceLeft = 0 if node.left == None else node.left.balance_factor
         balanceRight = 0 if node.right == None else node.right.balance_factor
-        node.balance_factor = max(balanceLeft, balanceRight) 
+        node.balance_factor = max(balanceLeft, balanceRight) + 1
         
     def remove(self, segment):
         restructureStart = None

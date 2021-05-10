@@ -6,4 +6,4 @@ class Node:
         self.left = None
         self.right = None
         self.parent = None
-        self.balance_factor = -1
+        self.balance_factor = 1

@@ -30,16 +30,21 @@ class AVLTree:
         self.root = self.addRecursive(self.root, segment)
     
     def addRecursive(self, root, segment):
+        # Base case, when we've reached a leaf (None)
         if root == None:
+            # Grow the size of the tree and create the new node
             self.size += 1
             newNode = Node(segment) 
             segment.node = newNode # every segment keeps track of its own node
             return newNode
         
+        # Obtain the y values to compare upon entry
         segX, segY = segment.leftPoint.coords()
         rootY = affine_interp(root.value, segX)
         
+        # If the y values are the same, we'll compare at the right endpoint
         if segY == rootY:
+            # We also want to keep track of this endpoint intersection
             self.intersections.append(Intersection(segX, rootY, root.value, segment))
             segX, segY = segment.rightPoint.coords()
             rootY = affine_interp(root.value, segX)
@@ -61,15 +66,20 @@ class AVLTree:
             return root
     
     def restructure(self, root):
+        # Check to see if we need to perform a rebalancing
         balanceLeft = 0 if root.left == None else root.left.balance_factor
         balanceRight = 0 if root.right == None else root.right.balance_factor
         if abs(balanceLeft - balanceRight) <= 1:
             return None
             
+        # Instantiate the nodes we're going to restructure
         z = root
         zLeftChild = False
         y = None
+        yLeftChild = False
+        x = None
         
+        # Selecting our second-from-the-top node
         if root.right != None and root.left == None:
             y = root.right
             zLeftChild = False
@@ -84,9 +94,7 @@ class AVLTree:
                 y = root.right
                 zLeftChild = False
                 
-        x = None
-        yLeftChild = False
-        
+        # Selecting our bottommost node
         if y.right != None and y.left == None:
             x = y.right
             yLeftChild = False
@@ -101,9 +109,9 @@ class AVLTree:
                 x = y.right
                 yLeftChild = False
         
-        # rebalancing
+        # Rebalancing a dog-legged set of nodes
         if zLeftChild != yLeftChild:
-            # bent
+            # On the left side
             if zLeftChild:
                 y.right = x.left
                 x.left = y 
@@ -112,6 +120,7 @@ class AVLTree:
                 y.parent = x
                 x.parent = z
                 z.left = x
+            # On the right side
             else:
                 y.left = x.right
                 x.right = y
@@ -120,11 +129,13 @@ class AVLTree:
                 y.parent = x
                 x.parent = z
                 z.right = x
+            # Update our node pointers so the in-order restructuring will work
             temp = x
             x = y
             y = temp
         
-        # in line
+        # Rebalancing in-order set of nodes
+        # Going to the left
         if zLeftChild:
             z.left = y.right
             if z.left != None:
@@ -138,6 +149,7 @@ class AVLTree:
                     tempParent.left = y
                 else:
                     tempParent.right = y
+        # Going to the right
         else:
             z.right = y.left
             if z.right != None:
@@ -152,22 +164,33 @@ class AVLTree:
                 else:
                     tempParent.right = y
         
+        # Update all of our balance factors
         self.updateBalanceFactor(x)
         self.updateBalanceFactor(z)
         self.updateBalanceFactor(y)
 
+        # Return the topmost node
         return y
         
+    # This method updates the balance factor for a node,
+    # by setting its balance factor to 1 + the maximum balance factor
+    # of its children
+    # Children that == None count as a balance factor of 0
     def updateBalanceFactor(self, node):
         balanceLeft = 0 if node.left == None else node.left.balance_factor
         balanceRight = 0 if node.right == None else node.right.balance_factor
         node.balance_factor = max(balanceLeft, balanceRight) + 1
         
+    # Remove a segment from the tree
+    # Assumes that the segment is in the tree
     def remove(self, segment):
+        # Take care of minor housekeeping details
         restructureStart = None
         self.size -= 1
         node = self.get(segment)
         segment.node = None
+
+        # Perform removal of the node
         if node.left == None and node.right == None: # no children
             if node.parent != None:
                 if node.parent.left == node: # determine whether removal node is left or right child
@@ -195,16 +218,17 @@ class AVLTree:
             # balance
             restructureStart = node.parent
         else: # both children present
+            # We have to replace the node with the in-order successor
             replacementNode = node.right
             while replacementNode.left != None:
                 replacementNode = replacementNode.left
-            # balance
             restructureStart = replacementNode.parent
             node.value = replacementNode.value
             replacementNode.parent.left = replacementNode.right
             replacementNode.right.parent = replacementNode.parent
             node.value.node = node
         
+        # Perform restructuring starting from the indicated first affected node
         while restructureStart != None:
             self.restructure(restructureStart)
             self.updateBalanceFactor(restructureStart)

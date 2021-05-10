@@ -88,14 +88,14 @@ class AVLTree:
         yLeftChild = False
         
         if y.right != None and y.left == None:
-            x = root.right
+            x = y.right
             yLeftChild = False
         elif y.left != None and y.right == None:
-            x = root.left
+            x = y.left
             yLeftChild = True
         else:
             if y.left.balance_factor > y.right.balance_factor:
-                x = root.left
+                x = y.left
                 yLeftChild = True
             else:
                 x = y.right
@@ -107,14 +107,16 @@ class AVLTree:
             if zLeftChild:
                 y.right = x.left
                 x.left = y 
-                y.right.parent  = y
+                if y.right != None:
+                    y.right.parent  = y
                 y.parent = x
                 x.parent = z
                 z.left = x
             else:
                 y.left = x.right
                 x.right = y
-                y.left.parent = y
+                if y.left != None:
+                    y.left.parent = y
                 y.parent = x
                 x.parent = z
                 z.right = x

@@ -16,6 +16,8 @@ class Event:
         return False
   
     def __ne__(self, other):
+        if not isinstance(other, type(self)):
+            return True
         if self.x != other.x or self.y != other.y:
             return True
         return False

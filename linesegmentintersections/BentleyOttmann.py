@@ -14,7 +14,7 @@ def bentley_ottman(segments, debug=False, log=False): # [[(x_1, y_1), (x_2, y_2)
         print("-----bentley-ottman-start-----")
     # Our basic data structures
     eq = PriorityQueue()
-    sl = sweepline(debug=True, log=log)
+    sl = sweepline(debug=debug, log=log)
 
     eq.initialize_event_queue(segments)
 

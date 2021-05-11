@@ -12,6 +12,8 @@ from linesegmentintersections.button import button
 
 from linesegmentintersections import bentley_ottman
 
+debug_mode = False
+
 # GLOBAL VARIABLES 
 # configurations for the whole program. Best not to mess with them too much. 
 is_fullscreen = False
@@ -141,14 +143,15 @@ def on_key_press(symbol, modifiers):
     
 
 def run_algorithm():
-    global mode, drawingBox, intersectionLocations, show_algorithm, alg_segs_highlight, alg_intersection_highlight, title_text
+    global mode, drawingBox, intersectionLocations, show_algorithm, alg_segs_highlight, alg_intersection_highlight, title_text, debug_mode
 
     # Format all the segments
     bo_segments = []
     for s in segs:
         bo_segments.append(s.ordered())
-    # print(bo_segments)
-    intersectionLocations, log = bentley_ottman(bo_segments, debug=True, log=True)
+    if debug_mode:
+        print(bo_segments) 
+    intersectionLocations, log = bentley_ottman(bo_segments, debug=debug_mode, log=True)
 
     if show_algorithm:
         for action in log:

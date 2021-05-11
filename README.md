@@ -3,6 +3,25 @@ GitHub repo for Spring 2021 Computational Geometry project
 
 This project will implement a python visualization of the sweepline algorithm using the pyglet graphics library. It will take a set of line segments as input. As a part of our visualization, we will include a visual representation of the data structures used to carry out this algorithm. This visualization will output the number of intersections found as well as their location. 
 
+## Usage
+If you'd just like to use the algorithm, you can import it using 
+
+    from linesegmentintersections import bentley_ottman
+    
+    segments = [[[0, 0], [4, 4]], [[1, 3], [3, 1]]]
+    intersections = bentley_ottman(segments)
+    
+This algorithm takes a list of pairs of (x, y) coordinates. It will output a list of Intersection objects, from which you can get the coordinates using 
+
+    x_coordinate = intersections[0].x
+    y_coordinate = intersections[0].y
+
+### Important Assumptions
+***No 3 input points are colinear.*** This implementation will work on most cases with colinear endpoints, but there are a few edge cases which will not work, such as 2 or more endpoints lying on a vertical segment.
+
+***No segments share endpoints.*** This will cause the algorithm to fail.
+
+
 ## Visualization
 Our project includes a visualization of the sweepline algorithm at work. It can be run with the command 
 

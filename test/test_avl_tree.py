@@ -271,6 +271,266 @@ def test_remove():
     assert tree.root.left.value == s3
     assert tree.root.right.value == s8
     
+def test_add_simple():
+    tree = AVLTree()
+    s1 = Segment((0, 0), (5, 0))
+    s2 = Segment((1, -1), (4, 1))
+    s3 = Segment((2, 1), (3, 1))
+    tree.add(s1)
+    tree.add(s2)
+    tree.add(s3)
     
+    tree.inOrder()
+    assert tree.root.value == s1
+    assert tree.root.left.value == s2
+    assert tree.root.right.value == s3
+    
+
+def test_remove_simple():
+    tree = AVLTree()
+    s1 = Segment((0, 0), (5, 0))
+    s2 = Segment((1, -1), (4, 1))
+    s3 = Segment((2, 1), (3, 1))
+    tree.add(s1)
+    tree.add(s2)
+    tree.add(s3)
+    
+    tree.inOrder()
+    print()
+    assert tree.root.value == s1
+    assert tree.root.left.value == s2
+    assert tree.root.right.value == s3
+    assert len(tree) == 3
+    
+    tree.remove(s1)
+    tree.inOrder()
+    print()
+    assert tree.root.value == s3
+    assert tree.root.left.value == s2
+    assert tree.root.right is None
+    assert len(tree) == 2
+    
+    tree.remove(s3)
+    tree.inOrder()
+    print()
+    assert tree.root.value == s2
+    assert tree.root.left == None
+    assert tree.root.right == None
+    assert len(tree) == 1
+    
+    tree.remove(s2)
+    tree.inOrder()
+    assert tree.root == None
+    assert len(tree) == 0
+    
+def test_swap_simple():
+    tree = AVLTree()
+    s1 = Segment((0, 0), (5, 0))
+    s2 = Segment((1, -1), (4, 1))
+    s3 = Segment((2, 1), (3, 1))
+    tree.add(s1)
+    tree.add(s2)
+    tree.add(s3)
+    
+    tree.swap(s1, s2)
+    tree.inOrder()
+    assert tree.root.value == s2
+    assert tree.root.left.value == s1
+    assert tree.root.right.value == s3
+    assert len(tree) == 3
+
+def test_findAbove_simple():
+    tree = AVLTree()
+    s1 = Segment((0, 0), (5, 0))
+    s2 = Segment((1, -1), (4, 1))
+    s3 = Segment((2, 1), (3, 1))
+    tree.add(s1)
+    tree.add(s2)
+    tree.add(s3)
+    
+    above = tree.findAbove(s1)
+    tree.inOrder()
+    assert tree.root.value == s1
+    assert tree.root.left.value == s2
+    assert tree.root.right.value == s3
+    assert len(tree) == 3
+    assert above == s3
+    
+    above = tree.findAbove(s2)
+    assert tree.root.value == s1
+    assert tree.root.left.value == s2
+    assert tree.root.right.value == s3
+    assert len(tree) == 3
+    assert above == s1
+    
+    above = tree.findAbove(s3)
+    assert tree.root.value == s1
+    assert tree.root.left.value == s2
+    assert tree.root.right.value == s3
+    assert len(tree) == 3
+    assert above == None
+
+def test_findBelow_simple():
+    tree = AVLTree()
+    s1 = Segment((0, 0), (5, 0))
+    s2 = Segment((1, -1), (4, 1))
+    s3 = Segment((2, 1), (3, 1))
+    tree.add(s1)
+    tree.add(s2)
+    tree.add(s3)
+    
+    below = tree.findBelow(s1)
+    tree.inOrder()
+    assert tree.root.value == s1
+    assert tree.root.left.value == s2
+    assert tree.root.right.value == s3
+    assert len(tree) == 3
+    assert below == s2
+    
+    below = tree.findBelow(s2)
+    assert tree.root.value == s1
+    assert tree.root.left.value == s2
+    assert tree.root.right.value == s3
+    assert len(tree) == 3
+    assert below == None
+    
+    below = tree.findBelow(s3)
+    assert tree.root.value == s1
+    assert tree.root.left.value == s2
+    assert tree.root.right.value == s3
+    assert len(tree) == 3
+    assert below == s1
+    
+def test_findAbove_leftbent():
+    tree = AVLTree()
+    s1 = Segment((0, 0), (5, 0))
+    s2 = Segment((1, 2), (5, -1))
+    s3 = Segment((2, -2), (6, 0))
+    s4 = Segment((3, -1), (6, 1))
+    tree.add(s1)
+    tree.add(s2)
+    tree.add(s3)
+    tree.add(s4)
+    
+    tree.inOrder()
+    assert tree.root.value == s1
+    assert tree.root.left.value == s3
+    assert tree.root.right.value == s2
+    assert tree.root.left.right.value == s4
+    assert len(tree) == 4
+    
+    above = tree.findAbove(s1)
+    assert above == s2
+    
+    above = tree.findAbove(s2)
+    assert above == None
+    
+    above = tree.findAbove(s3)
+    assert above == s4
+    
+    above = tree.findAbove(s4)
+    assert above == s1
+    
+    print()
+    tree.inOrder()
+    
+def test_findBelow_leftbent():
+    tree = AVLTree()
+    s1 = Segment((0, 0), (5, 0))
+    s2 = Segment((1, 2), (5, -1))
+    s3 = Segment((2, -2), (6, 0))
+    s4 = Segment((3, -1), (6, 1))
+    tree.add(s1)
+    tree.add(s2)
+    tree.add(s3)
+    tree.add(s4)
+    
+    tree.inOrder()
+    assert tree.root.value == s1
+    assert tree.root.left.value == s3
+    assert tree.root.right.value == s2
+    assert tree.root.left.right.value == s4
+    assert len(tree) == 4
+    
+    below = tree.findBelow(s1)
+    assert below == s4
+    
+    below = tree.findBelow(s2)
+    assert below == s1
+    
+    below = tree.findBelow(s3)
+    assert below == None
+    
+    below = tree.findBelow(s4)
+    assert below == s3
+    
+    print()
+    tree.inOrder()
+    
+def test_findAbove_rightbent():
+    tree = AVLTree()
+    s1 = Segment((0, 0), (5, 0))
+    s2 = Segment((1, 5), (5, -1))
+    s3 = Segment((2, -2), (6, 0))
+    s4 = Segment((3, 1), (6, 1))
+    tree.add(s1)
+    tree.add(s2)
+    tree.add(s3)
+    tree.add(s4)
+    
+    tree.inOrder()
+    assert tree.root.value == s1
+    assert tree.root.left.value == s3
+    assert tree.root.right.value == s2
+    assert tree.root.right.left.value == s4
+    assert len(tree) == 4
+    
+    above = tree.findAbove(s1)
+    assert above == s4
+    
+    above = tree.findAbove(s2)
+    assert above == None
+    
+    above = tree.findAbove(s3)
+    assert above == s1
+    
+    above = tree.findAbove(s4)
+    assert above == s2
+    
+    print()
+    tree.inOrder()
+    
+def test_findBelow_rightbent():
+    tree = AVLTree()
+    s1 = Segment((0, 0), (5, 0))
+    s2 = Segment((1, 5), (5, -1))
+    s3 = Segment((2, -2), (6, 0))
+    s4 = Segment((3, 1), (6, 1))
+    tree.add(s1)
+    tree.add(s2)
+    tree.add(s3)
+    tree.add(s4)
+    
+    tree.inOrder()
+    assert tree.root.value == s1
+    assert tree.root.left.value == s3
+    assert tree.root.right.value == s2
+    assert tree.root.right.left.value == s4
+    assert len(tree) == 4
+    
+    below = tree.findBelow(s1)
+    assert below == s3
+    
+    below = tree.findBelow(s2)
+    assert below == s4
+    
+    below = tree.findBelow(s3)
+    assert below == None
+    
+    below = tree.findBelow(s4)
+    assert below == s1
+    
+    print()
+    tree.inOrder()    
 
 

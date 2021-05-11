@@ -17,11 +17,11 @@ This algorithm takes a list of pairs of (x, y) coordinates. It will output a lis
     y_coordinate = intersections[0].y
 
 ### Important Assumptions
-***No 3 input points are colinear.*** This implementation will work on most cases with colinear endpoints, but there are a few edge cases which will not work, such as 2 or more endpoints lying on a vertical segment.
+***No endpoints lie on another segment.*** This implementation will work on most cases with colinear endpoints, but there are a few edge cases which will not work, such as 2 or more endpoints lying on a vertical segment. It will simply be missing intersections in the final output.
 
 ***No 3 line segments intersect at the same location.*** This may cause the algorithm to report a fewer quantity of intersections than are truly there, but will still report the correct locations of intersections.
 
-***No segments share endpoints.*** This will cause the algorithm to fault.
+***No segments share endpoints.*** This will cause the algorithm to throw an error.
 
 
 ## Visualization

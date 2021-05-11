@@ -149,6 +149,8 @@ class AVLTree:
                     tempParent.left = y
                 else:
                     tempParent.right = y
+            else:
+                self.root = y
         # Going to the right
         else:
             z.right = y.left
@@ -163,6 +165,8 @@ class AVLTree:
                     tempParent.left = y
                 else:
                     tempParent.right = y
+            else:
+                self.root = y
         
         # Update all of our balance factors
         self.updateBalanceFactor(x)
@@ -203,18 +207,24 @@ class AVLTree:
                 self.root = None
         elif node.right == None: # only left child present
             node.left.parent = node.parent # connecting present child to node's parent
-            if node.parent.left == node:
-                node.parent.left = node.left
+            if node.parent != None:
+                if node.parent.left == node:
+                    node.parent.left = node.left
+                else:
+                    node.parent.right = node.left
             else:
-                node.parent.right = node.left
+                self.root = node.left
             # balance
             restructureStart = node.parent
         elif node.left == Node: # only right child present
             node.right.parent = node.parent
-            if node.parent.left == node:
-                node.parent.left = node.right
+            if node.parent != None:
+                if node.parent.left == node:
+                    node.parent.left = node.right
+                else:
+                    node.parent.right = node.right
             else:
-                node.parent.right = node.right
+                self.root = node.right
             # balance
             restructureStart = node.parent
         else: # both children present
@@ -223,9 +233,21 @@ class AVLTree:
             while replacementNode.left != None:
                 replacementNode = replacementNode.left
             restructureStart = replacementNode.parent
+            # We have to handle things differently if the replacement node is the right child,
+            # or a left child of the right child
+            if replacementNode.parent == node:
+                # Slide over the replacement value, and skip the 
+                # replacement node
+                node.right = replacementNode.right
+                if node.right != None:
+                    node.right.parent = node
+            else:
+                # If we're replacing with a left child of the node's right child
+                replacementNode.parent.left = replacementNode.right
+                if replacementNode.right != None:
+                    replacementNode.right.parent = replacementNode.parent
+            # Update the connection between the replacement segment and its new node
             node.value = replacementNode.value
-            replacementNode.parent.left = replacementNode.right
-            replacementNode.right.parent = replacementNode.parent
             node.value.node = node
         
         # Perform restructuring starting from the indicated first affected node

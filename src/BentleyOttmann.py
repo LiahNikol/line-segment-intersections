@@ -2,7 +2,7 @@
 # of intersections found within in a set of segments
 from .PriorityQueue import PriorityQueue
 # from .AVLTree import AVLTree
-from .sweepline_interface import sweepline
+from .sweepline import sweepline
 from .Segment import Segment
 from .Endpoint import Endpoint
 from .Intersection import Intersection

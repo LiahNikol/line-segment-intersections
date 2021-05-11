@@ -125,20 +125,20 @@ def run_algorithm():
     # print(bo_segments)
     intersectionLocations, log = bentley_ottman(bo_segments, debug=True, log=True)
 
-    for action in log:
-        if "point" in action:
-            sweepline_line.x = action["point"][0]
-            sweepline_line.y = drawingBox.btn.y
-            sweepline_line.x2= action["point"][0] 
-            sweepline_line.y2= drawingBox.btn.y + drawingBox.btn.height
-        time.sleep(0.5)
-        if action["event"] == "add":
-            alg_segs.append(action["seg"])
-        elif action["event"] == "remove":
-            alg_segs.remove(action["seg"])
-        else:
-            continue
-        time.sleep(0.5)
+    # for action in log:
+    #     if "point" in action:
+    #         sweepline_line.x = action["point"][0]
+    #         sweepline_line.y = drawingBox.btn.y
+    #         sweepline_line.x2= action["point"][0] 
+    #         sweepline_line.y2= drawingBox.btn.y + drawingBox.btn.height
+    #     time.sleep(0.5)
+    #     if action["event"] == "add":
+    #         alg_segs.append(action["seg"])
+    #     elif action["event"] == "remove":
+    #         alg_segs.remove(action["seg"])
+    #     else:
+    #         continue
+    #     time.sleep(0.5)
     mode = "draw"
     return
     

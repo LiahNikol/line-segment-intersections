@@ -270,9 +270,16 @@ class AVLTree:
         # leftmost child of the right subtree
         node = self.get(segment)
         if node.right == None:
-            if node.parent == None or node.parent.right == node:
+            if node.parent == None:
                 return None
             else:
+                aboveNode = node.parent
+                previousNode = node
+                while (aboveNode.right == previousNode):
+                    if aboveNode.parent == None:
+                        return None
+                    previousNode = aboveNode
+                    aboveNode = aboveNode.parent
                 return node.parent.value
             
         aboveNode = node.right
@@ -285,9 +292,16 @@ class AVLTree:
         # rightmost child of the right subtree
         node = self.get(segment)
         if node.left == None:
-            if node.parent == None or node.parent.left == node:
+            if node.parent == None:
                 return None
             else:
+                belowNode = node.parent
+                previousNode = node
+                while (belowNode.left == previousNode):
+                    if belowNode.parent == None:
+                        return None
+                    previousNode = belowNode
+                    belowNode = belowNode.parent
                 return node.parent.value
             
         belowNode = node.left

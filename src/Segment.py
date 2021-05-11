@@ -16,6 +16,9 @@ class Segment:
     def __eq__(self, o):
         return self.leftPoint == o.leftPoint and self.rightPoint == o.rightPoint
 
+    def __ne__(self, o):
+        return o == None or (not self == o)
+
     def __repr__(self):
         return "{{{}, {}}}".format(self.leftPoint, self.rightPoint) 
         

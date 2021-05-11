@@ -190,7 +190,6 @@ def run_algorithm():
                     alg_segs_highlight.append({"seg":action["seg1"], "color":color_green})
                     alg_segs_highlight.append({"seg":action["seg2"], "color":color_green})
                     alg_intersection_highlight = (action["result"].x, action["result"].y)
-                    print("Updating alg_intersection_highlight")
                 time.sleep(0.5)
             time.sleep(1.5)
         title_text = ""

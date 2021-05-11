@@ -6,9 +6,13 @@ from .helper import orientation
 
 class Segment:
     def __init__(self, left, right):
-        # assumes client provides points in corrent left-right order
-        self.leftPoint = Endpoint(left[0], left[1], True, self)
-        self.rightPoint = Endpoint(right[0], right[1], False, self)
+        self.node = None
+        if left < right:
+            self.leftPoint = Endpoint(left[0], left[1], True, self)
+            self.rightPoint = Endpoint(right[0], right[1], False, self)
+        else:
+            self.leftPoint = Endpoint(right[0], right[1], True, self)
+            self.rightPoint = Endpoint(left[0], left[1], False, self)
   
     def __str__(self):
         return "{{{}, {}}}".format(self.leftPoint, self.rightPoint) 

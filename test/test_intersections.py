@@ -1,5 +1,5 @@
 # This file should be used to test the intersection-finding function 'intersects', found in Segment.py
-from src.Segment import Segment, intersects
+from linesegmentintersections.Segment import Segment, intersects
 
 def pointtest(point1A, point1B, point2A, point2B, intersect=None, a_on_top=True):
     segA = Segment(point1A, point1B)

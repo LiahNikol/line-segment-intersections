@@ -1,5 +1,5 @@
-from src.AVLTree import AVLTree
-from src.Segment import Segment
+from linesegmentintersections.AVLTree import AVLTree
+from linesegmentintersections.Segment import Segment
 
 def test_add():
     s0 = Segment((0, 0), (10, 0))

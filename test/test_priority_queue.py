@@ -1,8 +1,8 @@
 # Test class for testing the priority queue data structure used in B-O sweepline algorithm
-from src.PriorityQueue import PriorityQueue
-from src.Segment import Segment
-from src.Intersection import Intersection
-from src.Endpoint import Endpoint
+from linesegmentintersections.PriorityQueue import PriorityQueue
+from linesegmentintersections.Segment import Segment
+from linesegmentintersections.Intersection import Intersection
+from linesegmentintersections.Endpoint import Endpoint
     
 def test_add_each_endpoints():
     pq = PriorityQueue()

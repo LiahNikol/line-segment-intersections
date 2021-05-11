@@ -7,10 +7,10 @@ import pyglet
 from pyglet import shapes
 from pyglet.window import mouse, key
 
-from src.line import line, Location
-from src.button import button
+from linesegmentintersections.line import line, Location
+from linesegmentintersections.button import button
 
-from src.BentleyOttmann import bentley_ottman
+from linesegmentintersections import bentley_ottman
 
 # GLOBAL VARIABLES 
 # configurations for the whole program. Best not to mess with them too much. 

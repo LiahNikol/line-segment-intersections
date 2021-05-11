@@ -13,3 +13,6 @@ In the visualization, you can draw line segments within the grey square. The dra
 If you press 'RUN', the algorithm will be visualized on the drawn line segments. If you just want to compute the output of the algorithm, you can toggle the visualization mode by pressing the 'a' key.
 
 You can quit the visualization by pressing the 'q' key.
+
+## Algorithm Details
+We implemented the Bentley-Ottman algorithm, which uses a sweepline to add and remove line segments from a balanced tree data structure. Segments only check for intersections with other segments immediately above or below the given segment in the balanced tree. Upon reaching an intersection point, segments are switched in the tree. We keep track of the segment beginnings, ends, and intersections using a priority queue, which simulates our sweepline. For our balanced tree we implemented an AVL Tree.

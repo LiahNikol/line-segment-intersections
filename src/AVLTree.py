@@ -280,7 +280,7 @@ class AVLTree:
                         return None
                     previousNode = aboveNode
                     aboveNode = aboveNode.parent
-                return node.parent.value
+                return aboveNode.value
             
         aboveNode = node.right
         while aboveNode.left != None:
@@ -302,7 +302,7 @@ class AVLTree:
                         return None
                     previousNode = belowNode
                     belowNode = belowNode.parent
-                return node.parent.value
+                return belowNode.value
             
         belowNode = node.left
         while belowNode.right != None:

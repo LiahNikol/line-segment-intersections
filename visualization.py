@@ -21,6 +21,9 @@ old_color = (0, 0, 0)
 new_color = (100, 200, 150)
 border_size = 100
 mode = "draw"
+show_algorithm = True
+alg_button_color_show = (140, 232, 165)
+alg_button_color_fast =  (128, 193, 229)
 
 whiteText = (255, 255, 255, 255)
 blackText = (0, 0, 0, 255)
@@ -28,7 +31,16 @@ blackText = (0, 0, 0, 255)
 # List of drawn segments
 segs = []
 # List of drawn segments during algorithm runtime
+alg_title = pyglet.text.Label(text="Testing", x=window_size[0] / 2, y=window_size[1] - 0.5 * border_size, align='center', anchor_x='center', anchor_y='center', font_name="Helvetica", font_size=32, bold=True, color=blackText)
+title_text = ""
 alg_segs = []
+alg_segs_highlight = []
+alg_intersection_highlight = None
+color_black = (0, 0, 0)
+color_blue  = ( 86, 177, 229 )
+color_green = ( 135, 215, 147 )
+color_red   = ( 221, 113, 79 )
+color_purple= ( 227, 181, 236 )
 alg_segment = line((0, 0), (1, 1), color=old_color)
 sweepline_line = shapes.Line(0, 0, 1, 1, width = 2, color=old_color)
 intersectionLocations = []
@@ -36,7 +48,7 @@ intersectionPoint = shapes.Circle(0, 0, 8, color=(200, 50, 50))
 
 # Generate the buttons
 clearButton = button("CLEAR", x=70, y=30, width=140, height=60, buttonColor=(232, 229, 140), textColor=(255, 255, 255, 255), statechange=None)
-algButton = button("RUN", x=190, y=30, width=100, height=60, buttonColor=(140, 232, 165), textColor=(255, 255, 255, 255), statechange=None)
+algButton = button("RUN", x=190, y=30, width=100, height=60, buttonColor=alg_button_color_show, textColor=(255, 255, 255, 255), statechange=None)
 ex1Button = button("Ex. 1", x=300, y=30, width=120, height=60, buttonColor=(243, 124, 68), textColor=(255, 255, 255, 255), statechange=None)
 ex2Button = button("Ex. 2", x=420, y=30, width=120, height=60, buttonColor=(243, 177, 68), textColor=(255, 255, 255, 255), statechange=None)
 drawingBox = button("", x=window_size[0] / 2.0, y=window_size[1] / 2.0, width=window_size[0] - border_size * 2, height=window_size[1] - border_size * 2, buttonColor=(230, 230, 230), textColor=(255, 255, 255, 255), statechange=None)
@@ -115,8 +127,21 @@ def on_mouse_motion(x, y, dx, dy):
     if second_endpoint:
         segs[-1].move_endpoint((x, y))
 
+@window.event
+def on_key_press(symbol, modifiers):
+    global show_algorithm, window
+    if symbol == pyglet.window.key.A:
+        show_algorithm = not show_algorithm
+        if show_algorithm:
+            algButton.btn.color = alg_button_color_show
+        else:
+            algButton.btn.color = alg_button_color_fast
+    if symbol == pyglet.window.key.Q:
+        window.close()
+    
+
 def run_algorithm():
-    global mode, alg_objs, drawingBox, animation_list, pqCardSize, intersectionLocations
+    global mode, drawingBox, intersectionLocations, show_algorithm, alg_segs_highlight, alg_intersection_highlight, title_text
 
     # Format all the segments
     bo_segments = []
@@ -125,20 +150,54 @@ def run_algorithm():
     # print(bo_segments)
     intersectionLocations, log = bentley_ottman(bo_segments, debug=True, log=True)
 
-    # for action in log:
-    #     if "point" in action:
-    #         sweepline_line.x = action["point"][0]
-    #         sweepline_line.y = drawingBox.btn.y
-    #         sweepline_line.x2= action["point"][0] 
-    #         sweepline_line.y2= drawingBox.btn.y + drawingBox.btn.height
-    #     time.sleep(0.5)
-    #     if action["event"] == "add":
-    #         alg_segs.append(action["seg"])
-    #     elif action["event"] == "remove":
-    #         alg_segs.remove(action["seg"])
-    #     else:
-    #         continue
-    #     time.sleep(0.5)
+    if show_algorithm:
+        for action in log:
+            title_text = ""
+            alg_segs_highlight = []
+            alg_intersection_highlight = None
+            if "point" in action:
+                sweepline_line.x = action["point"][0]
+                sweepline_line.y = drawingBox.btn.y
+                sweepline_line.x2= action["point"][0] 
+                sweepline_line.y2= drawingBox.btn.y + drawingBox.btn.height
+            time.sleep(0.5)
+            if action["event"] == "add":
+                title_text = "Adding Segment"
+                alg_segs.append(action["seg"])
+                alg_segs_highlight.append({"seg":action["seg"], "color":color_green})
+            elif action["event"] == "remove":
+                title_text = "Removing Segment"
+                alg_segs.remove(action["seg"])
+                alg_segs_highlight.append({"seg":action["seg"], "color":color_red})
+            elif action["event"] == "intersection":
+                title_text = "Swapping Segments"
+                alg_segs_highlight.append({"seg":action["int"].seg1, "color":color_purple})
+                alg_segs_highlight.append({"seg":action["int"].seg2, "color":color_purple})
+                time.sleep(0.5)
+            else:
+                title_text = "Checking for Intersection"
+                alg_segs_highlight.append({"seg":action["seg1"], "color":color_blue})
+                alg_segs_highlight.append({"seg":action["seg2"], "color":color_blue})
+                time.sleep(1.5)
+                if action["result"] is None:
+                    title_text = "No Intersection Found"
+                    alg_segs_highlight = []
+                    alg_segs_highlight.append({"seg":action["seg1"], "color":color_red})
+                    alg_segs_highlight.append({"seg":action["seg2"], "color":color_red})
+                else:
+                    title_text = "Intersection Found"
+                    alg_segs_highlight = []
+                    alg_segs_highlight.append({"seg":action["seg1"], "color":color_green})
+                    alg_segs_highlight.append({"seg":action["seg2"], "color":color_green})
+                    alg_intersection_highlight = (action["result"].x, action["result"].y)
+                    print("Updating alg_intersection_highlight")
+                time.sleep(0.5)
+            time.sleep(1.5)
+        title_text = ""
+        alg_segs_highlight = []
+        alg_intersection_highlight = None
+        time.sleep(0.5)
+
     mode = "draw"
     return
     
@@ -146,7 +205,7 @@ def run_algorithm():
 # Drawing to the screen
 @window.event
 def on_draw():
-    global segs, mode, alg_objs
+    global segs, mode, alg_segment, alg_intersection_highlight, alg_segs_highlight, alg_segs, alg_title
     window.clear()
 
     if mode == "draw":
@@ -165,10 +224,24 @@ def on_draw():
     elif mode == "alg":
         drawingBox.draw()
 
+        alg_title.text = title_text
+        alg_title.draw()
+
+        alg_segment.set_color(color_black)
         for o in alg_segs:
             alg_segment.move_endpoint((o.leftPoint.x, o.leftPoint.y), p1=True)
             alg_segment.move_endpoint((o.rightPoint.x, o.rightPoint.y))
             alg_segment.draw()
+        for o in alg_segs_highlight:
+            alg_segment.set_color(o["color"])
+            alg_segment.move_endpoint((o["seg"].leftPoint.x, o["seg"].leftPoint.y), p1=True)
+            alg_segment.move_endpoint((o["seg"].rightPoint.x, o["seg"].rightPoint.y))
+            alg_segment.draw()
+        if alg_intersection_highlight != None:
+            intersectionPoint.x = alg_intersection_highlight[0]
+            intersectionPoint.y = alg_intersection_highlight[1]
+            intersectionPoint.draw()
+
         sweepline_line.draw()
 
 # I need this wrapper so that we can schedule the draw function to trigger consistently

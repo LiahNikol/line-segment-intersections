@@ -10,6 +10,8 @@ Our project includes a visualization of the sweepline algorithm at work. It can 
     
 In the visualization, you can draw line segments within the grey square. The drawing area can be cleared with the 'CLEAR' button, and examples can be loaded with the 'Ex.1' or 'Ex.2' buttons.
 
+![](https://github.com/LiahNikol/line-segment-intersections/blob/main/doc/visualization-1.png)
+
 If you press 'RUN', the algorithm will be visualized on the drawn line segments. If you just want to compute the output of the algorithm, you can toggle the visualization mode by pressing the 'a' key.
 
 You can quit the visualization by pressing the 'q' key.

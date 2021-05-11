@@ -323,6 +323,44 @@ def test_remove_simple():
     assert tree.root == None
     assert len(tree) == 0
     
+def test_remove_middle_1():
+    tree = AVLTree()
+    s1 = Segment((0, 0), (5, 0))
+    s2 = Segment((1, 5), (5, -1))
+    s3 = Segment((2, -2), (6, 0))
+    s4 = Segment((3, 1), (6, 1))
+    tree.add(s1)
+    tree.add(s2)
+    tree.add(s3)
+    tree.add(s4)
+    
+    assert len(tree) == 4
+    
+    tree.remove(s2)
+    tree.inOrder()
+    assert len(tree) == 3
+    assert tree.root.value == s1
+    assert tree.root.left.value == s3
+    assert tree.root.right.value == s4
+
+def test_remove_middle_2():
+    tree = AVLTree()
+    s1 = Segment((0, 0), (5, 0))
+    s2 = Segment((1, 2), (5, -1))
+    s3 = Segment((2, -2), (6, 0))
+    s4 = Segment((3, -1), (6, 1))
+    tree.add(s1)
+    tree.add(s2)
+    tree.add(s3)
+    tree.add(s4)
+    
+    tree.remove(s3)
+    tree.inOrder()
+    assert len(tree) == 3
+    assert tree.root.value == s1
+    assert tree.root.left.value == s4
+    assert tree.root.right.value == s2
+    
 def test_swap_simple():
     tree = AVLTree()
     s1 = Segment((0, 0), (5, 0))
